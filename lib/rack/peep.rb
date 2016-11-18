@@ -13,7 +13,7 @@ module Rack
     def initialize(app, options = {})
       @app = app
       @options = options
-      @path = options[:path] || '/peep'
+      @path = (options[:path] || '/peep').sub(%r{/+$}, "")
 
       static_root = ::File.expand_path('../../../static', __FILE__)
       @static_server = Rack::File.new(static_root)
