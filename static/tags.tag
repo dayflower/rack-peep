@@ -8,7 +8,7 @@
 		</div>
 	</div>
 
-	<div class="o-grid">
+	<div class="o-grid" style="margin-top: 1em;">
 		<div class="o-grid__cell">
 			<table class="c-table c-table--clickable c-table--condensed">
 				<thead class="c-table__head">
