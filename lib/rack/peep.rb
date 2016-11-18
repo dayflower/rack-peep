@@ -128,7 +128,7 @@ module Rack
 
       def readable_res_body(res)
         if res.content_type == 'application/json'
-          return render_json(res.body)
+          return render_json(res.body.join(""))
         end
 
         nil
