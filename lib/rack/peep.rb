@@ -13,12 +13,20 @@ module Rack
     def initialize(app, options = {})
       @app = app
       @options = options
+
       @path = (options[:path] || '/peep').sub(%r{/+$}, "")
+
+      @page_size = options[:page_size] || 10
+
+      if options[:storage]
+        @storage = options[:storage]
+      else
+        require "rack/peep/storage/memory"
+        @storage = Rack::Peep::Storage::Memory.new(page_size: @page_size)
+      end
 
       static_root = ::File.expand_path('../../../static', __FILE__)
       @static_server = Rack::File.new(static_root)
-
-      @acts = []
     end
 
     def call(env)
@@ -35,17 +43,17 @@ module Rack
       res = Rack::Response.new(body, status, headers)
 
       id = SecureRandom.uuid
-      interaction = Interaction.new(id, DateTime.now, req, req_headers, res)
+      interaction = Interaction.build(id, DateTime.now, req, req_headers, res)
 
-      keep = [9, @acts.length].min
-      @acts = @acts[-keep, keep] + [ interaction ]
+      @storage.add(interaction)
 
       [ status, headers, body ]
     end
 
     def peep(env, req)
       if req.path_info == @path + '/entries'
-        body = JSON.pretty_generate(@acts.reverse.map { |act| act.to_h })
+        entries = @storage.fetch(nil)[:entries]
+        body = JSON.pretty_generate(entries)
         res = Rack::Response.new(body)
         res['Content-Type'] = 'application/json'
         return res
@@ -81,6 +89,10 @@ module Rack
     end
 
     class Interaction
+      def self.build(*params)
+        self.new(*params).to_h
+      end
+
       def to_h
         {
           id: self.id,
