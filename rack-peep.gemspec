@@ -34,6 +34,7 @@ Gem::Specification.new do |spec|
     bin/console
     bin/setup
     lib/rack/peep.rb
+    lib/rack/peep/storage/file.rb
     lib/rack/peep/storage/memory.rb
     lib/rack/peep/version.rb
     lib/rack-peep.rb
