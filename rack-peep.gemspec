@@ -39,8 +39,6 @@ Gem::Specification.new do |spec|
     lib/rack/peep/version.rb
     lib/rack-peep.rb
     static/index.html
-    static/model.js
-    static/tags.tag
     test/rack/peep_test.rb
     test/test_helper.rb
     rack-peep.gemspec
