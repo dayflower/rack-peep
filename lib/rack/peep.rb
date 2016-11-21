@@ -131,7 +131,7 @@ module Rack
       def readable_req_param(req)
         if req.form_data?
           return JSON.pretty_generate(req.POST)
-        elsif req.content_type == 'application/json'
+        elsif req.content_type =~ %r{\Aapplication/json\s*(?:$|;)}
           return render_json(try_read(req.body))
         end
 
@@ -139,7 +139,7 @@ module Rack
       end
 
       def readable_res_body(res)
-        if res.content_type == 'application/json'
+        if res.content_type =~ %r{\Aapplication/json\s*(?:$|;)}
           return render_json(res.body.join(""))
         end
 
